@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scripts/data_store.gd" type="Script" id=1]
+
+[node name="data_store" type="Node"]
+script = ExtResource( 1 )

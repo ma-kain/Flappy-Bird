@@ -1,0 +1,301 @@
+[gd_scene load_steps=24 format=2]
+
+[ext_resource path="res://fonts/04B_19.TTF" type="DynamicFontData" id=1]
+[ext_resource path="res://sprites/button_play_pressed.png" type="Texture" id=2]
+[ext_resource path="res://sprites/button_score_normal.png" type="Texture" id=3]
+[ext_resource path="res://sprites/instructions.png" type="Texture" id=4]
+[ext_resource path="res://sprites/button_score_pressed.png" type="Texture" id=5]
+[ext_resource path="res://sprites/panel_score.png" type="Texture" id=6]
+[ext_resource path="res://sprites/button_play_normal.png" type="Texture" id=7]
+[ext_resource path="res://sprites/label_game_over.png" type="Texture" id=8]
+[ext_resource path="res://scripts/hud.gd" type="Script" id=9]
+[ext_resource path="res://sprites/label_new.png" type="Texture" id=10]
+[ext_resource path="res://scripts/gameover_panel.gd" type="Script" id=11]
+[ext_resource path="res://sprites/medal_bronze.png" type="Texture" id=12]
+[ext_resource path="res://sprites/spark_1.png" type="Texture" id=13]
+[ext_resource path="res://sprites/spark_2.png" type="Texture" id=14]
+[ext_resource path="res://sprites/spark_0.png" type="Texture" id=15]
+
+[sub_resource type="DynamicFont" id=1]
+font_data = ExtResource( 1 )
+
+[sub_resource type="GDScript" id=9]
+script/source = "extends TextureRect
+
+var radius
+var center_x
+var center_y
+
+func _ready():
+	radius = $medal_texture.rect_size.x/2
+	#computing center co-ordinates
+	center_x = $medal_texture.rect_position.x + radius
+	center_y = $medal_texture.rect_position.y + radius
+	$medal_shine_sprite.position = Vector2(center_x, center_y)
+	randomize()
+
+func random_translate():
+	print(\"random_translate\")	
+	var radian = rand_range(0, 2*PI)
+	var rand_radius = rand_range(0, radius)
+	var x = rand_radius * cos(radian) + center_x
+	var y = rand_radius * sin(radian) + center_y
+	$medal_shine_sprite.position = Vector2(x,y)
+"
+
+[sub_resource type="DynamicFont" id=2]
+size = 9
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 9
+font_data = ExtResource( 1 )
+
+[sub_resource type="SpriteFrames" id=4]
+animations = [ {
+"frames": [ ExtResource( 15 ), ExtResource( 13 ), ExtResource( 14 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="Animation" id=8]
+resource_name = "shining"
+length = 1.1
+loop = true
+step = 0.05
+tracks/0/type = "method"
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "random_translate"
+} ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("medal_shine_sprite:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.1, 0.3, 0.5, 0.7, 0.9 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 2, 1, 0 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("medal_shine_sprite:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0.05, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+
+[sub_resource type="Animation" id=6]
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("v_container/gameover_texture:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, -30 ), Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("v_container/score_texture:rect_position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 100 ), Vector2( 0, 41 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath(".:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=7]
+resource_name = "lower_panel"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("v_container/h_container:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 2, 1.86607 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+
+[node name="hud" type="CanvasLayer"]
+script = ExtResource( 9 )
+
+[node name="score_label" type="Label" parent="."]
+margin_top = 3.0
+margin_right = 144.0
+margin_bottom = 20.0
+custom_fonts/font = SubResource( 1 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+text = "0"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="instruction_button" type="TextureButton" parent="."]
+margin_top = 0.240402
+margin_right = 144.0
+margin_bottom = 256.24
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="texture" type="TextureRect" parent="instruction_button"]
+margin_left = 40.2404
+margin_top = 96.2404
+margin_right = 97.2404
+margin_bottom = 145.24
+texture = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="gameover_panel" type="CenterContainer" parent="."]
+margin_right = 144.0
+margin_bottom = 256.0
+script = ExtResource( 11 )
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="v_container" type="VBoxContainer" parent="gameover_panel"]
+margin_left = 15.0
+margin_top = 54.0
+margin_right = 128.0
+margin_bottom = 201.0
+custom_constants/separation = 20
+alignment = 1
+
+[node name="gameover_texture" type="TextureRect" parent="gameover_panel/v_container"]
+margin_right = 113.0
+margin_bottom = 21.0
+texture = ExtResource( 8 )
+stretch_mode = 4
+
+[node name="score_texture" type="TextureRect" parent="gameover_panel/v_container"]
+margin_top = 41.0
+margin_right = 113.0
+margin_bottom = 98.0
+texture = ExtResource( 6 )
+script = SubResource( 9 )
+
+[node name="current_score" type="Label" parent="gameover_panel/v_container/score_texture"]
+margin_left = 80.0
+margin_top = 16.0
+margin_right = 103.0
+margin_bottom = 26.0
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+align = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="best_score" type="Label" parent="gameover_panel/v_container/score_texture"]
+margin_left = 80.0
+margin_top = 36.6995
+margin_right = 103.0
+margin_bottom = 46.6995
+custom_fonts/font = SubResource( 3 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+align = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="new_texture" type="TextureRect" parent="gameover_panel/v_container/score_texture"]
+visible = false
+margin_left = 65.5576
+margin_top = 29.0
+margin_right = 81.5576
+margin_bottom = 36.0
+texture = ExtResource( 10 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="medal_texture" type="TextureRect" parent="gameover_panel/v_container/score_texture"]
+margin_left = 13.3336
+margin_top = 21.0847
+margin_right = 35.3336
+margin_bottom = 43.0847
+texture = ExtResource( 12 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="medal_shine_sprite" type="AnimatedSprite" parent="gameover_panel/v_container/score_texture"]
+visible = false
+frames = SubResource( 4 )
+
+[node name="animation_player" type="AnimationPlayer" parent="gameover_panel/v_container/score_texture"]
+playback_speed = 0.8
+anims/shining = SubResource( 8 )
+
+[node name="h_container" type="HBoxContainer" parent="gameover_panel/v_container"]
+margin_top = 118.0
+margin_right = 113.0
+margin_bottom = 147.0
+custom_constants/separation = 9
+alignment = 1
+
+[node name="play_button" type="TextureButton" parent="gameover_panel/v_container/h_container"]
+margin_right = 52.0
+margin_bottom = 29.0
+texture_normal = ExtResource( 7 )
+texture_pressed = ExtResource( 2 )
+
+[node name="scores_button" type="TextureButton" parent="gameover_panel/v_container/h_container"]
+margin_left = 61.0
+margin_right = 113.0
+margin_bottom = 29.0
+texture_normal = ExtResource( 3 )
+texture_pressed = ExtResource( 5 )
+
+[node name="animation_player" type="AnimationPlayer" parent="gameover_panel"]
+anims/gameover = SubResource( 6 )
+anims/lower_panel = SubResource( 7 )
+[connection signal="pressed" from="instruction_button" to="." method="_on_instruction_button_pressed"]
+[connection signal="pressed" from="gameover_panel/v_container/h_container/play_button" to="." method="_on_play_button_pressed"]

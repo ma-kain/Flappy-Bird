@@ -1,0 +1,66 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "StaticBody2D",
+"class": "Ground",
+"language": "GDScript",
+"path": "res://scripts/ground.gd"
+}, {
+"base": "StaticBody2D",
+"class": "Pipe",
+"language": "GDScript",
+"path": "res://scripts/pipe.gd"
+} ]
+_global_script_class_icons={
+"Ground": "",
+"Pipe": ""
+}
+
+[application]
+
+config/name="Flappy Bird"
+run/main_scene="res://scenes/game_world.tscn"
+config/icon="res://icon.png"
+
+[autoload]
+
+scene_changer="*res://scenes/scene_changer.tscn"
+node_accessor="*res://scenes/node_accessor.tscn"
+data_store="*res://scenes/data_store.tscn"
+
+[display]
+
+window/size/width=144
+window/size/height=256
+window/size/test_width=288
+window/size/test_height=512
+window/handheld/orientation="portrait"
+window/stretch/mode="2d"
+
+[input]
+
+flap={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":32,"unicode":0,"echo":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":70,"unicode":0,"echo":false,"script":null)
+ ]
+}
+
+[layer_names]
+
+2d_physics/layer_1="bird"
+2d_physics/layer_2="pipe"
+2d_physics/layer_3="ground"
+2d_physics/layer_4="score_checkpoint"
+
+[rendering]
+
+environment/default_environment="res://default_env.tres"
