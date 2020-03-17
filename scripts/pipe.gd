@@ -12,10 +12,12 @@ var camera: Camera2D
 
 func _ready():
 	print(self, " pipe_ready")
-	game_world = node_accessor.game_world()
 	camera = node_accessor.camera()
-	print(self.name, " connect signal score_checkpoint_crossed to ", game_world.name)
-	connect("score_checkpoint_crossed", game_world, "_on_pipe_score_checkpoint_crossed")
+	if node_accessor.is_game_stage():
+		game_world = node_accessor.current_scene()	
+		print(self.name, " connect signal score_checkpoint_crossed to ", game_world.name)
+		var error = connect("score_checkpoint_crossed", game_world, "_on_pipe_score_checkpoint_crossed")
+		print("connect error: ", error)
 
 func _process(delta):
 	if is_camera_crossed_pipe_length():
@@ -28,5 +30,6 @@ func is_camera_crossed_pipe_length():
 
 
 func _on_score_checkpoint_body_exited(body):
-	emit_signal("score_checkpoint_crossed")
-
+	print("_on_score_checkpoint_body_exited: ", body)
+	if node_accessor.is_game_stage():
+		emit_signal("score_checkpoint_crossed")

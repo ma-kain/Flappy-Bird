@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://fonts/04B_19.TTF" type="DynamicFontData" id=1]
 [ext_resource path="res://sprites/button_play_pressed.png" type="Texture" id=2]
@@ -15,11 +15,66 @@
 [ext_resource path="res://sprites/spark_1.png" type="Texture" id=13]
 [ext_resource path="res://sprites/spark_2.png" type="Texture" id=14]
 [ext_resource path="res://sprites/spark_0.png" type="Texture" id=15]
+[ext_resource path="res://sprites/button_pause.png" type="Texture" id=16]
+[ext_resource path="res://sprites/button_menu.png" type="Texture" id=17]
+[ext_resource path="res://scenes/menu_button.gd" type="Script" id=18]
 
 [sub_resource type="DynamicFont" id=1]
 font_data = ExtResource( 1 )
 
-[sub_resource type="GDScript" id=9]
+[sub_resource type="GDScript" id=2]
+resource_name = "pause_button"
+script/source = "#pause_button (built-in)
+
+extends TextureButton
+
+onready var resume_texture = preload(\"res://sprites/button_resume.png\")
+onready var pause_texture = preload(\"res://sprites/button_pause.png\")
+onready var pause_command = Pause.new(self)
+onready var resume_command = Resume.new(self)
+
+var command
+
+func _ready():
+	command = pause_command
+
+func _on_pause_button_pressed():
+	print(\"_on_pause_button_pressed: \", command.name)
+	_execute(command)
+
+func _execute(cmd):
+	get_tree().paused = cmd.is_paused
+	get_parent().get_node(\"menu_button\").visible = cmd.is_paused
+	get_parent().get_node(\"black_cover\").visible = cmd.is_darken
+	self.command = cmd.get_next()
+	self.texture_normal =  cmd.get_next().get_texture()
+
+class Pause:
+	const name = \"pause\"
+	const is_paused = true
+	const is_darken = true
+	var button: TextureButton
+	func _init(btn: TextureButton):
+		self.button = btn
+	func get_texture():
+		return button.pause_texture
+	func get_next():
+		return button.resume_command
+
+class Resume:
+	const name = \"resume\"
+	const is_paused = false
+	const is_darken = false
+	var button: TextureButton
+	func _init(btn: TextureButton):
+		self.button = btn
+	func get_texture():
+		return button.resume_texture
+	func get_next():
+		return button.pause_command
+"
+
+[sub_resource type="GDScript" id=3]
 script/source = "extends TextureRect
 
 var radius
@@ -35,7 +90,6 @@ func _ready():
 	randomize()
 
 func random_translate():
-	print(\"random_translate\")	
 	var radian = rand_range(0, 2*PI)
 	var rand_radius = rand_range(0, radius)
 	var x = rand_radius * cos(radian) + center_x
@@ -43,15 +97,15 @@ func random_translate():
 	$medal_shine_sprite.position = Vector2(x,y)
 "
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="DynamicFont" id=4]
 size = 9
 font_data = ExtResource( 1 )
 
-[sub_resource type="DynamicFont" id=3]
+[sub_resource type="DynamicFont" id=5]
 size = 9
 font_data = ExtResource( 1 )
 
-[sub_resource type="SpriteFrames" id=4]
+[sub_resource type="SpriteFrames" id=6]
 animations = [ {
 "frames": [ ExtResource( 15 ), ExtResource( 13 ), ExtResource( 14 ) ],
 "loop": true,
@@ -59,8 +113,7 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[sub_resource type="Animation" id=8]
-resource_name = "shining"
+[sub_resource type="Animation" id=7]
 length = 1.1
 loop = true
 step = 0.05
@@ -103,7 +156,13 @@ tracks/2/keys = {
 "values": [ true, false ]
 }
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="InputEventAction" id=8]
+action = "play"
+
+[sub_resource type="ShortCut" id=9]
+shortcut = SubResource( 8 )
+
+[sub_resource type="Animation" id=10]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("v_container/gameover_texture:rect_position")
@@ -142,8 +201,7 @@ tracks/2/keys = {
 "values": [ true ]
 }
 
-[sub_resource type="Animation" id=7]
-resource_name = "lower_panel"
+[sub_resource type="Animation" id=11]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("v_container/h_container:modulate")
@@ -173,9 +231,20 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="black_cover" type="ColorRect" parent="."]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 0.470588 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="instruction_button" type="TextureButton" parent="."]
+visible = false
+margin_left = 0.480797
 margin_top = 0.240402
-margin_right = 144.0
+margin_right = 144.481
 margin_bottom = 256.24
 __meta__ = {
 "_edit_use_anchors_": false
@@ -191,12 +260,39 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="pause_button" type="TextureButton" parent="."]
+pause_mode = 2
+margin_left = 10.0
+margin_top = 5.0
+margin_right = 23.0
+margin_bottom = 19.0
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource( 16 )
+script = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="menu_button" type="TextureButton" parent="."]
+pause_mode = 2
+visible = false
+margin_left = 52.0
+margin_top = 121.0
+margin_right = 92.0
+margin_bottom = 135.0
+mouse_default_cursor_shape = 2
+texture_normal = ExtResource( 17 )
+script = ExtResource( 18 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="gameover_panel" type="CenterContainer" parent="."]
+visible = false
 margin_right = 144.0
 margin_bottom = 256.0
 script = ExtResource( 11 )
 __meta__ = {
-"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
@@ -219,14 +315,14 @@ margin_top = 41.0
 margin_right = 113.0
 margin_bottom = 98.0
 texture = ExtResource( 6 )
-script = SubResource( 9 )
+script = SubResource( 3 )
 
 [node name="current_score" type="Label" parent="gameover_panel/v_container/score_texture"]
 margin_left = 80.0
 margin_top = 16.0
 margin_right = 103.0
 margin_bottom = 26.0
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 4 )
 custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
 align = 2
 __meta__ = {
@@ -238,7 +334,7 @@ margin_left = 80.0
 margin_top = 36.6995
 margin_right = 103.0
 margin_bottom = 46.6995
-custom_fonts/font = SubResource( 3 )
+custom_fonts/font = SubResource( 5 )
 custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
 align = 2
 __meta__ = {
@@ -268,13 +364,14 @@ __meta__ = {
 
 [node name="medal_shine_sprite" type="AnimatedSprite" parent="gameover_panel/v_container/score_texture"]
 visible = false
-frames = SubResource( 4 )
+frames = SubResource( 6 )
 
 [node name="animation_player" type="AnimationPlayer" parent="gameover_panel/v_container/score_texture"]
 playback_speed = 0.8
-anims/shining = SubResource( 8 )
+anims/shining = SubResource( 7 )
 
 [node name="h_container" type="HBoxContainer" parent="gameover_panel/v_container"]
+modulate = Color( 1, 1, 1, 0 )
 margin_top = 118.0
 margin_right = 113.0
 margin_bottom = 147.0
@@ -284,6 +381,7 @@ alignment = 1
 [node name="play_button" type="TextureButton" parent="gameover_panel/v_container/h_container"]
 margin_right = 52.0
 margin_bottom = 29.0
+shortcut = SubResource( 9 )
 texture_normal = ExtResource( 7 )
 texture_pressed = ExtResource( 2 )
 
@@ -295,7 +393,9 @@ texture_normal = ExtResource( 3 )
 texture_pressed = ExtResource( 5 )
 
 [node name="animation_player" type="AnimationPlayer" parent="gameover_panel"]
-anims/gameover = SubResource( 6 )
-anims/lower_panel = SubResource( 7 )
+anims/gameover = SubResource( 10 )
+anims/lower_panel = SubResource( 11 )
 [connection signal="pressed" from="instruction_button" to="." method="_on_instruction_button_pressed"]
+[connection signal="pressed" from="pause_button" to="pause_button" method="_on_pause_button_pressed"]
+[connection signal="pressed" from="menu_button" to="menu_button" method="_on_menu_button_pressed"]
 [connection signal="pressed" from="gameover_panel/v_container/h_container/play_button" to="." method="_on_play_button_pressed"]

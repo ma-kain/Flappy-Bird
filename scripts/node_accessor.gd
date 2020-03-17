@@ -1,20 +1,23 @@
-#utils.gd (auto-load script)
+#node_accessor.gd (auto-load script)
 extends Node
 
 func _ready():
 	print("node_accessor_ready")
 
-func game_root(): 
-	return get_tree().root
-
-func game_world(): 
-	return game_root().get_node("game_world")
+func current_scene():
+	return get_tree().current_scene 
 
 func bird(): 
-	return game_world().get_node("bird")
+	return current_scene().get_node("bird")
 
 func camera(): 
-	return game_world().get_node("camera")
+	return current_scene().get_node("camera")
 
 func pipe_spawner(): 
-	return game_world().get_node("pipe_spawner")
+	return current_scene().get_node("pipe_spawner")
+
+func is_game_stage() -> bool:
+	return get_tree().current_scene.name == 'game_world'
+
+func is_menu_stage() -> bool:
+	return get_tree().current_scene.name == 'main_menu'

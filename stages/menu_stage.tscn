@@ -1,0 +1,100 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://scenes/bird.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scripts/camera.gd" type="Script" id=4]
+[ext_resource path="res://scripts/ground_spawner.gd" type="Script" id=5]
+[ext_resource path="res://scenes/background.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/ground.tscn" type="PackedScene" id=7]
+[ext_resource path="res://sprites/label_flappy_bird.png" type="Texture" id=8]
+[ext_resource path="res://sprites/button_rate_pressed.png" type="Texture" id=9]
+[ext_resource path="res://sprites/button_rate_normal.png" type="Texture" id=10]
+[ext_resource path="res://sprites/button_play_normal.png" type="Texture" id=11]
+[ext_resource path="res://sprites/button_score_normal.png" type="Texture" id=12]
+[ext_resource path="res://sprites/button_play_pressed.png" type="Texture" id=13]
+[ext_resource path="res://sprites/button_score_pressed.png" type="Texture" id=14]
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends TextureButton
+
+func _ready():
+	grab_focus()
+
+func _on_menu_play_button_pressed():
+	disabled = true
+	var play_scene = \"res://stages/game_stage.tscn\"
+	print(\"emit signal change_scene to \", play_scene)
+	scene_changer.change_to_game_stage()
+	disabled = false
+"
+
+[node name="main_menu" type="Node"]
+pause_mode = 2
+
+[node name="camera" type="Camera2D" parent="."]
+position = Vector2( -40, 0 )
+anchor_mode = 0
+current = true
+script = ExtResource( 4 )
+
+[node name="bird" parent="." instance=ExtResource( 1 )]
+position = Vector2( 19.6064, 40 )
+gravity_scale = 5.0
+contacts_reported = 1
+contact_monitor = true
+
+[node name="background" parent="." instance=ExtResource( 6 )]
+
+[node name="ground_spawner" type="Node" parent="."]
+script = ExtResource( 5 )
+ground_scene = ExtResource( 7 )
+
+[node name="ground" parent="ground_spawner" instance=ExtResource( 7 )]
+
+[node name="hud" type="CanvasLayer" parent="."]
+
+[node name="banner_texture" type="TextureRect" parent="hud"]
+margin_left = 28.0
+margin_top = 80.0
+margin_right = 117.0
+margin_bottom = 104.0
+texture = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="rate_button" type="TextureButton" parent="hud"]
+margin_left = 57.0
+margin_top = 120.0
+margin_right = 88.0
+margin_bottom = 138.0
+texture_normal = ExtResource( 10 )
+texture_pressed = ExtResource( 9 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="h_container" type="HBoxContainer" parent="hud"]
+margin_left = 16.0
+margin_top = 152.0
+margin_right = 129.0
+margin_bottom = 181.0
+custom_constants/separation = 9
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="play_button" type="TextureButton" parent="hud/h_container"]
+margin_right = 52.0
+margin_bottom = 29.0
+texture_normal = ExtResource( 11 )
+texture_pressed = ExtResource( 13 )
+script = SubResource( 3 )
+
+[node name="scores_button" type="TextureButton" parent="hud/h_container"]
+margin_left = 61.0
+margin_right = 113.0
+margin_bottom = 29.0
+texture_normal = ExtResource( 12 )
+texture_pressed = ExtResource( 14 )
+[connection signal="pressed" from="hud/h_container/play_button" to="hud/h_container/play_button" method="_on_menu_play_button_pressed"]

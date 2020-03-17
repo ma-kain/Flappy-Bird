@@ -9,11 +9,8 @@ var camera: Camera2D
 
 func _ready():
 	print(self, " ground_ready")
-	game_world = node_accessor.game_world()
 	camera = node_accessor.camera()
 	sprite = get_node("sprite")
-	print(self.name, " connect signal bird_grounded to ", game_world.name)
-	connect("bird_grounded", game_world, "_on_bird_grounded")
 
 func _process(delta):
 	if is_camera_crossed_ground_length():

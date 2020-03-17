@@ -14,7 +14,7 @@ func spawn_ground(var x, var y):
 	print(ground.name, " connect signal tree_exited to ", self.name)
 	ground.connect("tree_exited", self, "_on_ground_tree_exited")
 	ground.position = Vector2(x,y)
-	add_child(ground)
+	call_deferred("add_child", ground)
 
 func _on_ground_tree_exited():
 	spawn_ground(ground.position.x + GROUND_WIDTH, ground.position.y)

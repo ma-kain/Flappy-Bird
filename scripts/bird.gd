@@ -5,8 +5,6 @@ signal bird_grounded
 var state
 onready var animation_player: AnimationPlayer = $animation_player
 
-var game_world: Node2D
-
 const BIRD_LAYER = 0
 const speed = 50
 
@@ -25,7 +23,6 @@ func STATE_GROUNDED():
 func _ready():
 	print(self, 'bird_ready')
 	set_process_input(true)
-	game_world = node_accessor.game_world()
 	state = FlyingState.new(self)
 
 func _process(delta):

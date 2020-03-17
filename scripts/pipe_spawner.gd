@@ -21,7 +21,7 @@ func start():
 	
 	var init_pos = Vector2()
 	init_pos.x = VIEWPORT_WIDTH + camera.position.x
-	init_pos.y = (VIEWPORT_HEIGHT-GROUND_HEIGHT)/2
+	init_pos.y = (VIEWPORT_HEIGHT-GROUND_HEIGHT)/2.0
 	
 	spawn_pipe(init_pos.x, init_pos.y)
 	spawn_pipe(pipe.position.x + gap_between_two_pipe_centers(), 
@@ -39,10 +39,10 @@ func _on_pipe_tree_exited():
 		vertical_distance_between_pipe_center_and_viewport_center())
 
 func gap_between_two_pipe_centers():
-	return PIPE_WIDTH/2 + OFFSET_X + PIPE_WIDTH/2
+	return PIPE_WIDTH/2.0 + OFFSET_X + PIPE_WIDTH/2.0
 
 func vertical_distance_between_pipe_center_and_viewport_center():
 	randomize()
-	var viewport_vertical_center = (VIEWPORT_HEIGHT - GROUND_HEIGHT)/2
+	var viewport_vertical_center = (VIEWPORT_HEIGHT - GROUND_HEIGHT)/2.0
 	return rand_range(viewport_vertical_center - OFFSET_Y, viewport_vertical_center + OFFSET_Y)
 	
