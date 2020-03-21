@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node
+
+func _ready():
+	yield(async_fn(), \"completed\")
+	print(\"completed\")
+
+func sync_fn():
+	for i in range(1,100):
+		if i%10 == 0: print(i)
+
+func async_fn():
+	for i in range(1,100):
+		if i%10 == 0: print(i)
+		yield(get_tree(), \"idle_frame\")
+"
+
+[node name="codepad" type="Node"]
+script = SubResource( 1 )

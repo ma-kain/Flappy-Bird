@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://fonts/04B_19.TTF" type="DynamicFontData" id=1]
 [ext_resource path="res://sprites/button_play_pressed.png" type="Texture" id=2]
@@ -37,6 +37,14 @@ var command
 
 func _ready():
 	command = pause_command
+	var bird = node_accessor.bird()
+	if bird:
+		var error = bird.connect(\"bird_grounded\", self, \"_on_bird_grounded\")
+		print(\"connect error: \", error)
+
+func _on_bird_grounded():
+	print(\"_on_bird_grounded\")
+	hide()
 
 func _on_pause_button_pressed():
 	print(\"_on_pause_button_pressed: \", command.name)
@@ -156,13 +164,19 @@ tracks/2/keys = {
 "values": [ true, false ]
 }
 
-[sub_resource type="InputEventAction" id=8]
-action = "play"
+[sub_resource type="GDScript" id=8]
+script/source = "extends TextureButton
 
-[sub_resource type="ShortCut" id=9]
-shortcut = SubResource( 8 )
+func _ready():
+	pass
 
-[sub_resource type="Animation" id=10]
+func _on_play_button_pressed():
+	disabled = true
+	scene_changer.change_to_game_stage()
+	disabled = false
+"
+
+[sub_resource type="Animation" id=9]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("v_container/gameover_texture:rect_position")
@@ -201,7 +215,7 @@ tracks/2/keys = {
 "values": [ true ]
 }
 
-[sub_resource type="Animation" id=11]
+[sub_resource type="Animation" id=10]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("v_container/h_container:modulate")
@@ -241,7 +255,6 @@ __meta__ = {
 }
 
 [node name="instruction_button" type="TextureButton" parent="."]
-visible = false
 margin_left = 0.480797
 margin_top = 0.240402
 margin_right = 144.481
@@ -288,7 +301,6 @@ __meta__ = {
 }
 
 [node name="gameover_panel" type="CenterContainer" parent="."]
-visible = false
 margin_right = 144.0
 margin_bottom = 256.0
 script = ExtResource( 11 )
@@ -353,6 +365,7 @@ __meta__ = {
 }
 
 [node name="medal_texture" type="TextureRect" parent="gameover_panel/v_container/score_texture"]
+visible = false
 margin_left = 13.3336
 margin_top = 21.0847
 margin_right = 35.3336
@@ -381,9 +394,9 @@ alignment = 1
 [node name="play_button" type="TextureButton" parent="gameover_panel/v_container/h_container"]
 margin_right = 52.0
 margin_bottom = 29.0
-shortcut = SubResource( 9 )
 texture_normal = ExtResource( 7 )
 texture_pressed = ExtResource( 2 )
+script = SubResource( 8 )
 
 [node name="scores_button" type="TextureButton" parent="gameover_panel/v_container/h_container"]
 margin_left = 61.0
@@ -393,9 +406,9 @@ texture_normal = ExtResource( 3 )
 texture_pressed = ExtResource( 5 )
 
 [node name="animation_player" type="AnimationPlayer" parent="gameover_panel"]
-anims/gameover = SubResource( 10 )
-anims/lower_panel = SubResource( 11 )
+anims/gameover = SubResource( 9 )
+anims/lower_panel = SubResource( 10 )
 [connection signal="pressed" from="instruction_button" to="." method="_on_instruction_button_pressed"]
 [connection signal="pressed" from="pause_button" to="pause_button" method="_on_pause_button_pressed"]
 [connection signal="pressed" from="menu_button" to="menu_button" method="_on_menu_button_pressed"]
-[connection signal="pressed" from="gameover_panel/v_container/h_container/play_button" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="gameover_panel/v_container/h_container/play_button" to="gameover_panel/v_container/h_container/play_button" method="_on_play_button_pressed"]

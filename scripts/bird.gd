@@ -82,6 +82,7 @@ class FlappingState:
 		bird.linear_velocity = Vector2(bird.linear_velocity.x, -150)
 		bird.angular_velocity = -3
 		bird.animation_player.play("flap")
+		audio_player.get_node("sfx_wing").play()
 
 	func input(event):
 		if event.is_action_pressed("flap") || (event is InputEventScreenTouch and event.is_pressed()):
@@ -94,9 +95,10 @@ class HitState:
 	var bird
 	func _init(bird):
 		self.bird = bird
-		bird.animation_player.play("hit")
+		#bird.animation_player.play("hit")
 		bird.linear_velocity = Vector2.ZERO
 		bird.angular_velocity = 2
+		audio_player.get_node("sfx_die").play()
 
 	func update(delta):
 		pass
@@ -109,7 +111,8 @@ class GroundedState:
 	var bird
 	func _init(bird):
 		self.bird = bird
-		bird.animation_player.play("grounded")
+		audio_player.get_node("sfx_hit").play()
+		#bird.animation_player.play("grounded")
 
 	func update(delta):
 		pass

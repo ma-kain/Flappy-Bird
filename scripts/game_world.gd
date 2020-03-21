@@ -9,10 +9,10 @@ const best_score_key = "best_score"
 const last_best_score_key = "last_best_score"
 const medal_key = "medal"
 
-const MEDAL_BRONZE_SCORE = 1
-const MEDAL_SILVER_SCORE = 2
-const MEDAL_GOLD_SCORE = 3
-const MEDAL_PLATINUM_SCORE = 4
+const MEDAL_BRONZE_SCORE = 10
+const MEDAL_SILVER_SCORE = 20
+const MEDAL_GOLD_SCORE = 30
+const MEDAL_PLATINUM_SCORE = 40
 
 func _ready():
 	pass
@@ -22,6 +22,7 @@ func _on_pipe_score_checkpoint_crossed():
 
 func increment_score():
 	current_score += 1
+	audio_player.get_node("sfx_point").play()
 	$hud.update_live_score(current_score)
 
 func _on_bird_grounded():

@@ -35,6 +35,7 @@ config/icon="res://icon.png"
 scene_changer="*res://scenes/scene_changer.tscn"
 node_accessor="*res://scenes/node_accessor.tscn"
 data_store="*res://scenes/data_store.tscn"
+audio_player="*res://scenes/audio_player.tscn"
 
 [display]
 

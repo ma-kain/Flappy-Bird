@@ -32,7 +32,7 @@ func spawn_pipe(var x, var y):
 	print(pipe.name, " connect signal tree_exited to ", self.name)
 	pipe.connect("tree_exited", self, "_on_pipe_tree_exited")
 	pipe.position = Vector2(x,y)
-	add_child(pipe)
+	call_deferred("add_child", pipe)
 
 func _on_pipe_tree_exited():
 	spawn_pipe(pipe.position.x + gap_between_two_pipe_centers(), 

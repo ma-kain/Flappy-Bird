@@ -13,7 +13,7 @@
 [ext_resource path="res://sprites/button_play_pressed.png" type="Texture" id=13]
 [ext_resource path="res://sprites/button_score_pressed.png" type="Texture" id=14]
 
-[sub_resource type="GDScript" id=3]
+[sub_resource type="GDScript" id=1]
 script/source = "extends TextureButton
 
 func _ready():
@@ -21,8 +21,6 @@ func _ready():
 
 func _on_menu_play_button_pressed():
 	disabled = true
-	var play_scene = \"res://stages/game_stage.tscn\"
-	print(\"emit signal change_scene to \", play_scene)
 	scene_changer.change_to_game_stage()
 	disabled = false
 "
@@ -89,7 +87,7 @@ margin_right = 52.0
 margin_bottom = 29.0
 texture_normal = ExtResource( 11 )
 texture_pressed = ExtResource( 13 )
-script = SubResource( 3 )
+script = SubResource( 1 )
 
 [node name="scores_button" type="TextureButton" parent="hud/h_container"]
 margin_left = 61.0
